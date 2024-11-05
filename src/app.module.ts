@@ -4,6 +4,8 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './user/entities/user.entity';
+import { FromModule } from './from/from.module';
+import { From } from './from/entities/from.entity';
 
 @Module({
   imports: [
@@ -14,11 +16,12 @@ import { User } from './user/entities/user.entity';
       username: 'root',       // El usuario por defecto de XAMPP es 'root'
       password: '',           // La contraseña por defecto de XAMPP es vacía
       database: 'emca',       // Nombre de la base de datos que creaste en phpMyAdmin
-      entities: [User],       // Asegúrate de que la entidad está importada
+      entities: [User, From],       // Asegúrate de que la entidad está importada
       synchronize: true,      // Solo para desarrollo, sincroniza automáticamente las tablas con las entidades
     }),
     UserModule,
-    AuthModule
+    AuthModule,
+    FromModule
   ],
   controllers: [],
   providers: [],
