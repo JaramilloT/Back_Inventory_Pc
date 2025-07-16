@@ -79,6 +79,9 @@ export class From {
     @Column()
     ip: string;
 
+    @Column({ default: '' }) // ← Valor por defecto agregado
+    tb_gb: string;
+
     @Column({ nullable: true }) // Define como nullable si el archivo es opcional
     file: string;
 

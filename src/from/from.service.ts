@@ -15,59 +15,105 @@ export class FromService {
     private fromRepository: Repository<From>,
   ) {}
 
-  async create(createFromDto: CreateFromDto & { file: string }) {
-    const newFrom = this.fromRepository.create(createFromDto);
-    await this.fromRepository.save(newFrom);
-    return newFrom;
+  async create(createFromDto: CreateFromDto & { file?: string }) {
+    try {
+      console.log('Datos a crear en servicio:', createFromDto);
+      
+      const newFrom = this.fromRepository.create(createFromDto);
+      const savedForm = await this.fromRepository.save(newFrom);
+      
+      console.log('Formulario guardado:', savedForm);
+      return savedForm;
+    } catch (error) {
+      console.error('Error en service.create:', error);
+      throw error;
+    }
   }
 
-  findAll() {
-    return this.fromRepository.find();
+  async findAll() {
+    try {
+      return await this.fromRepository.find();
+    } catch (error) {
+      console.error('Error en service.findAll:', error);
+      throw error;
+    }
   }
 
-  findOne(id_formulario: number) {
-    return this.fromRepository.findOneBy({ id_formulario });
+  async findOne(id_formulario: number) {
+    try {
+      return await this.fromRepository.findOneBy({ id_formulario });
+    } catch (error) {
+      console.error('Error en service.findOne:', error);
+      throw error;
+    }
   }
 
   async findById(id_formulario: number): Promise<From> {
-    return await this.fromRepository.findOne({ where: { id_formulario: id_formulario } });
-  }
-
-  async updates(id_formulario: number, updateFromDto: UpdateFromDto,){
-    return this.fromRepository.update({id_formulario}, updateFromDto)
-  }
-
-  async update(id_formulario: number, updateFromDto: UpdateFromDto, file?: string) {
-    // Crear un objeto temporal con los datos de `updateFromDto` y agregar `file` si existe
-    const updateData = {
-      ...updateFromDto,
-      ...(file && { file }), // Agregar `file` solo si existe
-    };
-  
-    // Actualiza el registro en la base de datos
-    await this.fromRepository.update({ id_formulario }, updateData);
-  
-    // Retorna el registro actualizado
-    return this.findOne(id_formulario);
-  }
-  
-  async remove(id_formulario: number) {
-    // Intenta eliminar el registro y verifica si existe
-    const result = await this.fromRepository.delete({ id_formulario });
-    if (result.affected === 0) {
-      throw new NotFoundException('Formulario no encontrado');
+    try {
+      return await this.fromRepository.findOne({ 
+        where: { id_formulario: id_formulario } 
+      });
+    } catch (error) {
+      console.error('Error en service.findById:', error);
+      throw error;
     }
   }
-  // async deleteFile(id_formulario: number, filename: string) {
-  //   const form = await this.fromRepository.findOne({ where: { id_formulario: id_formulario } });
-  //   if (!form) throw new Error('Formulario no encontrado');
 
-  //   // Primero eliminamos el archivo del sistema de archivos
-  //   const filePath = path.join(__dirname, '..', '..', 'uploads', filename); // Asegúrate de que la ruta sea correcta
-  //   fs.unlink(filePath);
+  async updates(id_formulario: number, updateFromDto: UpdateFromDto) {
+    try {
+      const result = await this.fromRepository.update(
+        { id_formulario }, 
+        updateFromDto
+      );
+      
+      if (result.affected === 0) {
+        throw new NotFoundException('Formulario no encontrado');
+      }
+      
+      return result;
+    } catch (error) {
+      console.error('Error en service.updates:', error);
+      throw error;
+    }
+  }
 
-  //   // Luego eliminamos la referencia al archivo en la base de datos
-  //   form.file = form.file.filter(file => file.filename !== filename);
-  //   return this.fromRepository.save(form);
-  // }
+  async update(id_formulario: number, updateFromDto: UpdateFromDto & { file?: string }) {
+    try {
+      // Crear un objeto temporal con los datos de `updateFromDto` y agregar `file` si existe
+      const updateData = {
+        ...updateFromDto,
+        ...(updateFromDto.file && { file: updateFromDto.file }),
+      };
+
+      // Actualiza el registro en la base de datos
+      const result = await this.fromRepository.update(
+        { id_formulario }, 
+        updateData
+      );
+
+      if (result.affected === 0) {
+        throw new NotFoundException('Formulario no encontrado');
+      }
+
+      // Retorna el registro actualizado
+      return this.findOne(id_formulario);
+    } catch (error) {
+      console.error('Error en service.update:', error);
+      throw error;
+    }
+  }
+
+  async remove(id_formulario: number) {
+    try {
+      // Intenta eliminar el registro y verifica si existe
+      const result = await this.fromRepository.delete({ id_formulario });
+      if (result.affected === 0) {
+        throw new NotFoundException('Formulario no encontrado');
+      }
+      return result;
+    } catch (error) {
+      console.error('Error en service.remove:', error);
+      throw error;
+    }
+  }
 }
