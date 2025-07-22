@@ -7,7 +7,7 @@ services:
     startCommand: npm run start:prod
     envVars:
       - key: DB_HOST
-        value: mysql-emca
+        value: mysql-inventarioPc
       - key: DB_PORT
         value: 3306
       - key: DB_USERNAME
@@ -15,7 +15,29 @@ services:
       - key: DB_PASSWORD
         value: jara123
       - key: DB_NAME
-        value: emca
+        value: inventarioPc
+      - key: PORT
+        value: 3000
+      - key: FRONTEND_URL
+        value: https://front-inventario-grande-rvef.vercel.app
+services:
+  - type: web
+    name: backend-inventario
+    env: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: DB_HOST
+        value: mysql-inventarioPc
+      - key: DB_PORT
+        value: 3306
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: jara123
+      - key: DB_NAME
+        value: inventarioPc
       - key: PORT
         value: 3000
       - key: FRONTEND_URL
