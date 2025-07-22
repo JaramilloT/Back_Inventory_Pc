@@ -1,27 +1,30 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ConfigModule } from '@nestjs/config';
 
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from './user/entities/user.entity';
 import { FromModule } from './from/from.module';
+
+import { User } from './user/entities/user.entity';
 import { From } from './from/entities/from.entity';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',      // Host del servidor MySQL (XAMPP corre en localhost)
-      port: 3306,             // Puerto de MySQL (el puerto de XAMPP por defecto es 3306)
-      username: 'root',       // El usuario por defecto de XAMPP es 'root'
-      password: 'jara123',           // La contraseña por defecto de XAMPP es vacía
-      database: 'inventarioPc',       // Nombre de la base de datos que creaste en phpMyAdmin
-      entities: [User, From],       // Asegúrate de que la entidad está importada
-      synchronize: false,      // Solo para desarrollo, sincroniza automáticamente las tablas con las entidades
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT || '3306', 10),
+      username: process.env.DB_USERNAME,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      entities: [User, From],
+      synchronize: false,
     }),
     UserModule,
     AuthModule,
-    FromModule
+    FromModule,
   ],
   controllers: [],
   providers: [],

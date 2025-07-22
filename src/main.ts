@@ -5,6 +5,9 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as express from 'express';
 import * as path from 'path';
 import * as dotenv from 'dotenv';
+dotenv.config();
+
+mysql://root:dPRUvlaKaxTtWgODZkKoQmEisbGxzlfq@nozomi.proxy.rlwy.net:54741/railway
 
 dotenv.config(); // Cargar variables de entorno
 
